@@ -1,0 +1,70 @@
+{% extends "templates/web.html" %}
+
+{% block page_content %}
+<style>
+    .dashboard {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f9f9f9;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+    }
+    .dashboard h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 24px;
+    }
+    .dashboard table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .dashboard table, .dashboard th, .dashboard td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    .dashboard th {
+        background-color: #f2f2f2;
+        text-align: left;
+    }
+    .dashboard ul {
+        list-style: none;
+        padding: 0;
+    }
+    .dashboard li {
+        padding: 5px 0;
+    }
+</style>
+
+<div class="dashboard">
+    <h1>{{ title |e }}</h1>
+    <table>
+        <tr>
+            <th>Address</th>
+            <td>{{ doc.address }}</td>
+        </tr>
+        <tr>
+            <th>Phone</th>
+            <td>{{ doc.contact_number }}</td>
+        </tr>
+        {% set doctor = frappe.get_doc("Doctor", doc.doctor) %}
+        <tr>
+            <th>Doctor</th>
+            <td>{{ doctor.full_name }}, {{ doctor.speciality }}</td>
+        </tr>
+        <tr>
+            <th>Timings</th>
+            {% set shifts = frappe.get_list("Schedule Shift", filters={"clinic":doc.name}, fields=["start_time", "end_time"]) %}
+            <td>
+                <ul>
+                    {% for shift in shifts %}
+                        <li>{{ shift.start_time }} - {{ shift.end_time }}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+        </tr>
+    </table>
+    <a href="#" class="btn btn-info">Approintment</a>
+</div>
+{% endblock %}
